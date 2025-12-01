@@ -115,5 +115,5 @@ def get_adata(work_path, b4_adata_path):
     for ele in score_lst:
         cell_score_lst.extend(ele)
     adata = ad.concat(adata_lst)
-    return adata, assigned_clu_dict_lst, cell_score_lst
+    return adata, cell_score_lst
 
