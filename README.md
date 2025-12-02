@@ -96,7 +96,7 @@ get_adata(work_path, b4_adata_path)
 ```
 #### Description
   ```
-  Get the trained stLocation model.
+  Get output of stLocation model.
   ```
 #### Parameters  
   ``` 
@@ -145,7 +145,7 @@ generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
 train_model(work_path)
 ```
 
-### Get inferred cell type proportions
+### Get output of stLocation
 ```python
 adata, score_lst = get_adata(work_path, b4_adata_path)
 ```
