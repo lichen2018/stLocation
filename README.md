@@ -12,7 +12,7 @@ could aggregate enough 1um bins to anchors determined by clusters of unspliced R
 ### Install stLocation
 Download and install stLocation
 ```
-git clone --recursive https://github.com/lichen2018/stLocation.git -r https://github.com/lichen2018/stLocation/main/requirements.txt
+git clone --recursive https://github.com/lichen2018/stLocation.git -r https://github.com/lichen2018/stLocation/main/requirement.txt
 cd stLocation
 python3 setup.py build
 python3 setup.py install
