@@ -115,37 +115,37 @@ get_adata(work_path, b4_adata_path)
 All propcessed data could be downloaded from the shared link: https://drive.google.com/drive/folders/11djR7vxr6Y1VTpz2EVJKH3MvJNGm9VoR?usp=share_link  
 
 ## Example workflow
-### Import function and datasets
+### Calculate score matrix
 ```python
-import anndata
-from stLocation import get_cell_type_profile
-from stLocation import generate_train_valid_batches
-from stLocation import train_stLocation, train_stLocation_with_pseudo_data, get_proportions
-
-sc_file = './stLocation data/mouse brain/Stereo-seq/sc_1857.h5ad'
-st_file = './stLocation data/mouse brain/Stereo-seq/st_1857.h5ad'
-st_adata=anndata.read_h5ad(st_file)
-sc_adata=anndata.read_h5ad(sc_file)
+from get_score_matrix import generate_score_matrix
+from generate_cluster_center import generate_cluster_centers
+from generate_anchor import generate_anchor
+from get_cell import train_model
+from process_result import get_adata
+spatial_data_path = './'
+work_path = spatial_data_path+'690/'
+b4_adata_path = spatial_data_path+'b4_in_tissue.h5ad'
+unsplice_b4_adata_path = spatial_data_path+'unsplice_in_tissue.h5ad'
+b40_adata_path = spatial_data_path+'b40_in_tissue.h5ad'
+scores = generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, 0.4, 4)
 ```
 
-### Calulate the cell-type specific mean expression level of genes and gene-specific dispersion parameters
+### Get cluster centers of score matrix
 ```python
-sc_mu_expr, sc_disp_expr, scRNA_data, scRNA_label, stRNA_data = get_cell_type_profile(sc_adata, st_adata)
+generate_cluster_centers(work_path, split_num = 4, max_iter=80)
 ```
 
-### Train stLocation with spatial transcriptomics
+### Generate anchors to indicate cellular positions
 ```python
-model, cell_type_list = train_stLocation()
+generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
 ```
 
-### Train stLocation with pseudo spots and spatial transcriptomics (option)
+### Train stLocation
 ```python
-generate_train_valid_batches()
-model, cell_type_list = train_stLocation_with_pseudo_data()
+train_model(work_path)
 ```
 
 ### Get inferred cell type proportions
 ```python
-result = get_proportions(model, cell_type_list)
-result.to_csv('result.csv')
+adata, score_lst = get_adata(work_path, b4_adata_path)
 ```
