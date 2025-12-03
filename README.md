@@ -10,8 +10,11 @@ could aggregate enough 1um bins to anchors determined by clusters of unspliced R
 ## Installation
 
 ### Install stLocation
+
 Download and install stLocation
 ```
+conda create -n stLocation python=3.10.18
+conda activate stLocation
 git clone --recursive https://github.com/lichen2018/stLocation.git
 cd stLocation
 pip3 install -r requirements.txt
