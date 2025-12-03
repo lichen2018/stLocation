@@ -28,7 +28,7 @@ pip3 install https://download.pytorch.org/whl/cu124/torchaudio-2.6.0%2Bcu124-cp3
 ```
 Download and install torchvision
 ```
-https://download.pytorch.org/whl/cu124/torchvision-0.21.0%2Bcu124-cp310-cp310-linux_x86_64.whl#sha256=3d3e74018eaa7837c73e3764dad3b7792b7544401c25a42977e9744303731bd3
+pip3 install https://download.pytorch.org/whl/cu124/torchvision-0.21.0%2Bcu124-cp310-cp310-linux_x86_64.whl#sha256=3d3e74018eaa7837c73e3764dad3b7792b7544401c25a42977e9744303731bd3
 ```
 Download and install stLocation
 ```
