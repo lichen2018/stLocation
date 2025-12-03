@@ -10,7 +10,26 @@ could aggregate enough 1um bins to anchors determined by clusters of unspliced R
 ## Installation
 
 ### Install stLocation
-
+Download and install pytorch
+```
+pip3 install --no-cache-dir --find-links https://download.pytorch.org/whl/cu124/torch/ torch==2.6.0
+```
+Download and install torch-scatter
+```
+pip3 install https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_scatter-2.1.2%2Bpt26cu124-cp310-cp310-linux_x86_64.whl
+```
+Download and install torch-sparse
+```
+pip3 install https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_sparse-0.6.18%2Bpt26cu124-cp310-cp310-linux_x86_64.whl
+```
+Download and install torchaudio
+```
+pip3 install https://download.pytorch.org/whl/cu124/torchaudio-2.6.0%2Bcu124-cp310-cp310-linux_x86_64.whl#sha256=6b54f97fff96b4ba3da44b6b3f50727c25122d1479107b119d1275944ec83ea1
+```
+Download and install torchvision
+```
+https://download.pytorch.org/whl/cu124/torchvision-0.21.0%2Bcu124-cp310-cp310-linux_x86_64.whl#sha256=3d3e74018eaa7837c73e3764dad3b7792b7544401c25a42977e9744303731bd3
+```
 Download and install stLocation
 ```
 conda create -n stLocation python=3.10.18
