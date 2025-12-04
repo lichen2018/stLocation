@@ -3,26 +3,6 @@ from typing import Optional
 import numpy as np
 import cv2
 
-def circle(k: int) -> np.ndarray:
-    """Draw a circle of diameter k.
-
-    Args:
-        k: Diameter
-
-    Returns:
-        8-bit unsigned integer Numpy array with 1s and 0s
-
-    Raises:
-        ValueError: if `k` is even or less than 1
-    """
-    if k < 1 or k % 2 == 0:
-        raise ValueError(f"`k` must be odd and greater than 0.")
-
-    r = (k - 1) // 2
-    return cv2.circle(np.zeros((k, k), dtype=np.uint8), (r, r), r, 1, -1)
-
-
-
 def create_neighbor_offsets(neighborhood: np.ndarray) -> np.ndarray:
     """Helper function to convert a neighborhood mask to coordinate offsets.
 
