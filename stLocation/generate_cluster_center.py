@@ -121,7 +121,6 @@ def gpu_ultra_fast_weighted_mean_shift(X, scores, bandwidth, max_iter=100, tol=1
     shifted_points_cpu = X
     prev_shifted_points_gpu = cuda.device_array_like(shifted_points_gpu)
     while iter_count < max_iter:
-        T1 = time.time()
         with stream:
             weighted_kernel_density_gpu_ultra[blocks_per_grid, threads_per_block](
                 shifted_points_gpu, X_gpu, scores_gpu,
@@ -133,8 +132,6 @@ def gpu_ultra_fast_weighted_mean_shift(X, scores, bandwidth, max_iter=100, tol=1
         iter_count += 1
         print(iter_count)
 
-        T2 =time.time()
-        print('gpu time:%s ms' % ((T2 - T1)*1000))
     stream.synchronize()
 
     T1 = time.time()
