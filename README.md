@@ -153,6 +153,15 @@ b4_adata_path = spatial_data_path+'b4_in_tissue.h5ad'
 unsplice_b4_adata_path = spatial_data_path+'unsplice_in_tissue.h5ad'
 b40_adata_path = spatial_data_path+'b40_in_tissue.h5ad'
 scores = generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, 0.4, 4)
+# Get cluster centers of score matrix
+generate_cluster_centers(work_path, split_num = 4, max_iter=80)
+# Generate anchors to indicate cellular positions
+generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
+# Train stLocation
+train_model(work_path)
+# Get output of stLocation
+adata, score_lst = get_adata(work_path, b4_adata_path)
+
 ```
 
 ### Get cluster centers of score matrix
