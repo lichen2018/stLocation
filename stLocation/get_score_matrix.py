@@ -2,7 +2,7 @@ import scanpy as sc
 import pandas as pd
 import anndata as ad
 import numpy as np
-from tools import _score_pixels,select_layer_data,gen_new_layer_key
+from stLocation.tools import _score_pixels,select_layer_data,gen_new_layer_key
 import os
 
 
