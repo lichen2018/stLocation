@@ -161,25 +161,4 @@ generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
 train_model(work_path)
 # Get output of stLocation
 adata, score_lst = get_adata(work_path, b4_adata_path)
-
-```
-
-### Get cluster centers of score matrix
-```python
-generate_cluster_centers(work_path, split_num = 4, max_iter=80)
-```
-
-### Generate anchors to indicate cellular positions
-```python
-generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
-```
-
-### Train stLocation
-```python
-train_model(work_path)
-```
-
-### Get output of stLocation
-```python
-adata, score_lst = get_adata(work_path, b4_adata_path)
 ```
