@@ -15,14 +15,14 @@ def get_select_b4(b4_coors, region_x_start, region_x_end, region_y_start, region
     return select_b4
 
 
-def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst):
+def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst, st_prop_threshold):
     salus_bar_names = []
     salus_bar_name_dict = {}
     max_cols = b40_result.idxmax(axis=1)
     max_values = b40_result.max(axis=1)
 
     # 创建条件掩码：最大值列在目标列表中且值 >= 0.15
-    mask = (max_cols.isin(select_ct_lst)) & (max_values >= 0.15)
+    mask = (max_cols.isin(select_ct_lst)) & (max_values >= st_prop_threshold)
 
     # 筛选符合条件的索引并去重
     salus_bar_names = b40_result.index[mask].unique().tolist()
@@ -97,7 +97,7 @@ def generate_bar_matrix(select_b4_adata, x_min, x_max, y_min, y_max):
 
 
 
-def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, threshold = 0.2, split_num = 2):
+def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, select_ct_lst=[], select_genes=[], threshold = 0.2, split_num = 2, st_prop_threshold = 0.15):
     output_path = work_path + 'score_matrix_files/'
     unsplice_adata = sc.read_h5ad(unsplice_b4_adata_path)
     b4_adata = sc.read_h5ad(b4_adata_path)
@@ -107,10 +107,14 @@ def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_
     gene_info_path = work_path+'mu_gene_expression.csv'
 
     gene_info = pd.read_csv(gene_info_path, delimiter = ',', header = 0, index_col = 0)
+    all_genes = list(gene_info.columns)
+    if len(select_ct_lst) == 0:
+        select_genes = all_genes
     
-    select_genes = list(gene_info.columns)
-    
-    ct_list = list(gene_info.index)
+        ct_list = list(gene_info.index)
+    else:
+        select_genes = select_genes
+        ct_list = select_ct_lst
 
 
     if len(set(select_genes)&set(list(unsplice_adata.var_names)))==0:
@@ -154,7 +158,7 @@ def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_
     
     
     
-    salus_b40,salus_bar_names = filter_low_qual_b40(b40_slide, b40_result, ct_list)
+    salus_b40,salus_bar_names = filter_low_qual_b40(b40_slide, b40_result, ct_list, st_prop_threshold)
     
 
     points = salus_b40.obsm['spatial']
@@ -189,24 +193,7 @@ def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_
     select_unsplice_adata = unsplice_adata[select_b4]
 
 
-    '''select_count_matrix = np.zeros((int((region_x_end-region_x_start)/4)+1, int((region_y_end-region_y_start)/4)+1))
-    select_mask_matrix = np.zeros((int((region_x_end-region_x_start)/4)+1, int((region_y_end-region_y_start)/4)+1))
-    unsplice_count_ls = np.sum(select_unsplice_adata[:,select_genes].X,axis=1)
-    coor = select_unsplice_adata.obsm['spatial']
-    b4_names = list(select_unsplice_adata.obs_names)
-    for idx in range(coor.shape[0]):
-        tmp_x = coor[idx][0]
-        tmp_y = coor[idx][1]
-        idx_x = int((tmp_x-x_min)/4)
-        idx_y = int((tmp_y-y_min)/4)
-        select_count_matrix[idx_x,idx_y] = unsplice_count_ls[idx,0]
-    for idx in range(coor.shape[0]):
-        if b4_names[idx] in occupied_b4_dict:
-            tmp_x = coor[idx][0]
-            tmp_y = coor[idx][1]
-            idx_x = int((tmp_x-x_min)/4)
-            idx_y = int((tmp_y-y_min)/4)
-            select_mask_matrix[idx_x,idx_y] = 1'''
+
 
 
     select_count_matrix, select_mask_matrix = generate_count_mask_matrix(select_unsplice_adata, occupied_b4_dict, select_genes, region_x_start, region_x_end, region_y_start, region_y_end)
@@ -223,29 +210,10 @@ def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_
 
 
 
-    select_b4_adata = b4_adata[select_b4,select_genes]
+    select_b4_adata = b4_adata[select_b4,all_genes]
     sc.pp.filter_cells(select_b4_adata, min_genes=1)
 
-    '''coor = select_b4_adata.obsm['spatial']
 
-    default_string = ""
-    bar_matrix = []
-    for idx in range(int((region_x_end-region_x_start)/4)+1):
-        tmp_lst = []
-        for jdx in range(int((region_y_end-region_y_start)/4)+1):
-            tmp_lst.append(default_string)
-        bar_matrix.append(tmp_lst)
-    #bar_matrix = [[default_string for _ in range(int((x_max-x_min)/4)+1)] for _ in range(int((y_max-y_min)/4)+1)]
-
-    b4_bars = list(select_b4_adata.obs_names)
-    for idx in range(coor.shape[0]):
-        tmp_x = coor[idx][0]
-        tmp_y = coor[idx][1]
-        idx_x = int((tmp_x-region_x_start)/4)
-        idx_y = int((tmp_y-region_y_start)/4)
-        bar_matrix[idx_x][idx_y] = b4_bars[idx]
-        bar_matrix_idx_dict.update({b4_bars[idx]:[idx_x,idx_y]})
-    bar_matrix = np.array(bar_matrix)'''
 
 
     bar_matrix, bar_matrix_idx_dict = generate_bar_matrix(select_b4_adata, region_x_start, region_x_end, region_y_start, region_y_end)
