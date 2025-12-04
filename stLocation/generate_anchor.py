@@ -232,13 +232,10 @@ def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst):
     max_cols = b40_result.idxmax(axis=1)
     max_values = b40_result.max(axis=1)
 
-    # 创建条件掩码：最大值列在目标列表中且值 >= 0.15
     mask = (max_cols.isin(select_ct_lst)) & (max_values >= 0.15)
 
-    # 筛选符合条件的索引并去重
     salus_bar_names = b40_result.index[mask].unique().tolist()
 
-    # 构建字典（如果仍需要）
     salus_bar_name_dict = {idx: 1 for idx in salus_bar_names}
 
     salus_b40 = b40_slide[salus_bar_names]
@@ -478,9 +475,6 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
                 if flag == False:
                     break
             search_radius += 1
-        if count % 1000 == 0:
-            print(count)
-        count += 1
         
     anchor_prop_lst, updated_cluster_centers, neighbor_num_lst = get_anchor_prop_lst(updated_cluster_centers, bar_matrix, stvae_b40, select_b4_adata, 100000, 100000)
     neighbor_bars = []
