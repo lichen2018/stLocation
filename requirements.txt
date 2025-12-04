@@ -26,6 +26,6 @@ matplotlib==3.8.0
 plotly==6.0.0
 scvi-tools==1.1.2
 sparsemax==0.1.9
-
+fbgbp==0.2.1
 
 
