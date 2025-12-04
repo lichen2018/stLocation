@@ -212,12 +212,6 @@ def train_model(work_path,start=0, num_epochs = 30000):
 
             if epoch % 10000 == 0:
                 print(f"Epoch {epoch}, Loss: {loss}")
-            if epoch % 10000 == 0 and epoch >0:
-                torch.save(a_logits_dis_prop, result_path+'a_logits_dis_prop_'+str(idx)+'_'+str(epoch)+'.pt')
-                torch.save(c_logits_dis_prop, result_path+'c_logits_dis_prop_'+str(idx)+'_'+str(epoch)+'.pt')
-
-
-                
                 
         # Get the optimized variational parameters
         a_logits_dis_prop = pyro.param("a_concentration").detach()
