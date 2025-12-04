@@ -142,11 +142,11 @@ All propcessed data could be downloaded from the shared link: https://drive.goog
 See the stVAE tutorial at: https://github.com/lichen2018/stVAE/tree/main. The output of stVAE should be stored in the work path, which would also store the intermediate result of stLocation.
 ### Calculate score matrix
 ```python
-from get_score_matrix import generate_score_matrix
-from generate_cluster_center import generate_cluster_centers
-from generate_anchor import generate_anchor
-from get_cell import train_model
-from process_result import get_adata
+from stLocation.get_score_matrix import generate_score_matrix
+from stLocation.generate_cluster_center import generate_cluster_centers
+from stLocation.generate_anchor import generate_anchor
+from stLocation.get_cell import train_model
+from stLocation.process_result import get_adata
 spatial_data_path = './'
 work_path = spatial_data_path+'690/'
 b4_adata_path = spatial_data_path+'b4_in_tissue.h5ad'
