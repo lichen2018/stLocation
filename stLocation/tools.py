@@ -28,8 +28,8 @@ import matplotlib as mpl
 
 import sys
 import em, vi
-from em import run_em
-from bp import run_bp
+from stLocation.em import run_em
+from stLocation.bp import run_bp
 
 def contours(adata: AnnData, layer: str, colors: Optional[List] = None, scale: float = 0.05) -> go.Figure:
     """Interactively display UMI density bins.
