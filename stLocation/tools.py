@@ -27,7 +27,8 @@ from skimage.color.colorlabel import DEFAULT_COLORS
 import matplotlib as mpl
 
 import sys
-import em, vi
+import stLocation.em as em
+import stLocation.vi as vi
 from stLocation.em import run_em
 from stLocation.bp import run_bp
 
