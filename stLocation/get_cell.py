@@ -21,11 +21,6 @@ def top_10_indices_per_row(arr):
 
 
 
-#disper = disper[select_gene_index_list]
-#scale_prior = scale_prior[select_gene_index_list]
-#additive_prior = additive_prior[select_gene_index_list]
-
-
 SMALL_CONSTANT_1 = 0.001
 SMALL_CONSTANT_2 = 0.000000001
 
@@ -33,10 +28,7 @@ SMALL_CONSTANT_2 = 0.000000001
 
 
 def model(counts, anchor_proportions, anchor_weights, nearest_anchor2anchor, sc_rate, disper, scale_prior, additive_prior):
-    #gamma = pyro.sample("gamma", dist.Normal(torch.zeros(sc_rate.shape[1]).to(device), torch.ones(sc_rate.shape[1]).to(device)).to_event(1))
-    #gamma = torch.exp(gamma).to(device)
-    #epsilon = torch.exp(epsilon).to(device)
-    
+
     std = torch.tensor(1).to(device)
     gamma = pyro.sample("gamma", dist.Normal(scale_prior, std).to_event(1))
     epsilon = pyro.sample("epsilon", dist.Normal(additive_prior, std).to_event(1))
@@ -48,15 +40,10 @@ def model(counts, anchor_proportions, anchor_weights, nearest_anchor2anchor, sc_
     num_anchors = anchor_proportions.shape[0]
     with pyro.plate("anchor_plate", num_anchors):
         c_logits = pyro.sample(f'c_logits', dist.Dirichlet(anchor_proportions + 0.001))
-    #c_logits = pyro.sample(f'c_logits', dist.Dirichlet(anchor_proportions+0.001).to_event(1))
-    #c_logits = normalize_2Dtensor(c_logits)
-    #a_logits = normalized_anchor_weights
-    #c_logits = anchor_proportions
+
     n = len(counts)
     with pyro.plate("data", n):
         a_logits = pyro.sample(f'a_logits', dist.Dirichlet(anchor_weights+0.000000001))
-        #a_logits = normalize_2Dtensor(a_logits)
-
         a = pyro.sample('a', dist.Categorical(a_logits))
         row_indices = torch.arange(nearest_anchor2anchor.size(0), device=nearest_anchor2anchor.device)
         a = nearest_anchor2anchor[row_indices, a]
@@ -64,12 +51,9 @@ def model(counts, anchor_proportions, anchor_weights, nearest_anchor2anchor, sc_
 
         total_counts = counts.sum(dim=1)
         rates = torch.index_select(sc_rate, 0, c)
-        #print(rates)
-
         rates = total_counts.unsqueeze(1) * rates
 
         rates = torch.add(torch.mul(rates, gamma), epsilon)
-        #print(rates)
         pyro.sample('counts', dist.NegativeBinomial(rates, logits=disper).to_event(1), obs=counts)
 
 
@@ -94,17 +78,14 @@ def guide(counts, anchor_proportions, anchor_weights, nearest_anchor2anchor, sc_
 
     a_concentration = pyro.param("a_concentration", (anchor_weights+0.000000001).clone(), constraint=dist.constraints.positive)
     a_concentration = a_concentration.to(torch.float64)
-    #c_concentration_prior = torch.softmax(torch.randn(anchor_proportions.shape[0], anchor_proportions.shape[1]), dim=1).to(device)
     c_concentration_prior = anchor_proportions
     c_concentration = pyro.param("c_concentration", (c_concentration_prior+0.001).clone(), constraint=dist.constraints.positive)
     c_concentration = c_concentration.to(torch.float64)
     with pyro.plate("anchor_plate", num_anchors):
         c_logits = pyro.sample(f'c_logits', dist.Dirichlet(c_concentration))
-    #c_logits = pyro.sample(f'c_logits', dist.Dirichlet(c_concentration).to_event(1))
-    #c_logits = normalize_2Dtensor(c_logits)
+
     with pyro.plate("data", n):
         a_logits = pyro.sample(f'a_logits', dist.Dirichlet(a_concentration))
-        #a_logits = normalize_2Dtensor(a_logits)
         a = pyro.sample('a', dist.Categorical(a_logits))
         row_indices = torch.arange(nearest_anchor2anchor.size(0), device=nearest_anchor2anchor.device)
         a = nearest_anchor2anchor[row_indices, a]
