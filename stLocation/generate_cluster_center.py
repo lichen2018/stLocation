@@ -6,6 +6,7 @@ from numba import njit, prange, set_num_threads
 from numba import cuda, float32
 import cupy as cp
 import math
+from tqdm import tqdm
 from pathlib import Path
 # Set CPU threads (for non-GPU parts, if any)
 set_num_threads(max(1, multiprocessing.cpu_count() - 2))
@@ -120,7 +121,7 @@ def gpu_ultra_fast_weighted_mean_shift(X, scores, bandwidth, max_iter=100, tol=1
 
     shifted_points_cpu = X
     prev_shifted_points_gpu = cuda.device_array_like(shifted_points_gpu)
-    while iter_count < max_iter:
+    for iter_count in tqdm(range(max_iter)):
         with stream:
             weighted_kernel_density_gpu_ultra[blocks_per_grid, threads_per_block](
                 shifted_points_gpu, X_gpu, scores_gpu,
@@ -130,7 +131,6 @@ def gpu_ultra_fast_weighted_mean_shift(X, scores, bandwidth, max_iter=100, tol=1
         stream.synchronize()
         prev_shifted_points_gpu, shifted_points_gpu = shifted_points_gpu, new_shifted_points_gpu
         iter_count += 1
-        print(iter_count)
 
     stream.synchronize()
 
@@ -171,6 +171,7 @@ def generate_cluster_centers(work_path, split_num = 2, max_iter=100):
     bandwidth =3
     for x_idx in range(split_num):
         for y_idx in range(split_num):
+            print('Processing region:'+str(x_idx)+'_'+str(y_idx))
             file = Path(score_matrix_path+str(x_idx)+'_'+str(y_idx)+'_coor.npy')
             if file.exists():
                 coordinates = np.load(score_matrix_path+str(x_idx)+'_'+str(y_idx)+'_coor.npy')
