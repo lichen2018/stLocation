@@ -4,7 +4,7 @@ import pyro.distributions as dist
 import torch
 import pandas as pd
 import numpy as np
-
+from tqdm import tqdm
 
 from pyro.infer import SVI, Trace_ELBO
 from pyro.optim import Adam
@@ -163,7 +163,7 @@ def train_model(work_path,start=0, num_epochs = 30000):
     threshold = 20
 
     pyro.util.set_rng_seed(0)
-    for idx in range(start,len(datafiles)):
+    for idx in tqdm(range(start,len(datafiles))):
         pyro.clear_param_store()
         counts = np.load(data_path+'counts_'+str(idx)+'.npy')
         anchor_prop_lst = np.load(data_path+'anchor_prop_'+str(idx)+'.npy')
