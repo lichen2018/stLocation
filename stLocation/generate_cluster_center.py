@@ -138,7 +138,7 @@ def gpu_ultra_fast_weighted_mean_shift(X, scores, bandwidth, max_iter=100, tol=1
 
     shifted_points_cpu = shifted_points_gpu.copy_to_host()
     T2 =time.time()
-    print('gpu time:%s ms' % ((T2 - T1)*1000))
+    print('gpu time:%s s' % (T2 - T1))
     from sklearnex import patch_sklearn
     patch_sklearn()
     from sklearn.cluster import DBSCAN
