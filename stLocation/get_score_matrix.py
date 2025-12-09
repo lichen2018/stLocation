@@ -97,7 +97,7 @@ def generate_bar_matrix(select_b4_adata, x_min, x_max, y_min, y_max):
 
 
 
-def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, select_ct_lst=[], select_genes=[], threshold = 0.2, split_num = 2, st_prop_threshold = 0.15):
+def generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, threshold = 0.2, split_num = 2, st_prop_threshold = 0.15, select_ct_lst=[], select_genes=[]):
     output_path = work_path + 'score_matrix_files/'
     unsplice_adata = sc.read_h5ad(unsplice_b4_adata_path)
     b4_adata = sc.read_h5ad(b4_adata_path)
