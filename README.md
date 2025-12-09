@@ -43,7 +43,7 @@ python3 setup.py install
 ## API
 ### Calculate scores for each spot
 ```python
-generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, threshold = 0.2, split_num = 2)
+generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path, threshold = 0.2, split_num = 2, st_prop_threshold = 0.15, select_ct_lst=[], select_genes=[])
 ```
 #### Description
   ```
@@ -57,6 +57,8 @@ generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adat
   b40_adata_path            path to the AnnData object storing spatial RNA data at 10 μm resolution.
   threshold                 threshold for filtering out spots with low scores.
   split_num                 the tissue is split to split_num*split_num regions.
+  select_ct_lst             list of selected cell types
+  select_genes              list of selected genes
   ```
 #### Return 
   ```
