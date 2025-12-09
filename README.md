@@ -142,7 +142,7 @@ All propcessed data could be downloaded from the shared link: https://drive.goog
 ## Example workflow
 ### Utilize stVAE to deconvolve the cell-type composition of spots at 10um resolution
 See the stVAE tutorial at: https://github.com/lichen2018/stVAE/tree/main. The output of stVAE should be stored in the work path, which would also store the intermediate result of stLocation.
-### Calculate score matrix
+### stLocation pipeline
 ```python
 from stLocation.get_score_matrix import generate_score_matrix
 from stLocation.generate_cluster_center import generate_cluster_centers
