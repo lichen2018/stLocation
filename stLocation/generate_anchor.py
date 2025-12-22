@@ -475,6 +475,9 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
                 if flag == False:
                     break
             search_radius += 1
+            if search_radius > 10:
+                break
+
         
     anchor_prop_lst, updated_cluster_centers, neighbor_num_lst = get_anchor_prop_lst(updated_cluster_centers, bar_matrix, stvae_b40, select_b4_adata, 100000, 100000)
     neighbor_bars = []
