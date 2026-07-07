@@ -226,13 +226,13 @@ def accelerated_filter(region_b4_bars, region_clu_lst, bar_matrix_idx_dict):
 
     
 
-def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst):
+def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst, st_prop_threshold):
     salus_bar_names = []
     salus_bar_name_dict = {}
     max_cols = b40_result.idxmax(axis=1)
     max_values = b40_result.max(axis=1)
 
-    mask = (max_cols.isin(select_ct_lst)) & (max_values >= 0.15)
+    mask = (max_cols.isin(select_ct_lst)) & (max_values >= st_prop_threshold)
 
     salus_bar_names = b40_result.index[mask].unique().tolist()
 
@@ -307,7 +307,7 @@ for idx in range(coor.shape[0]):
 bar_matrix = np.array(bar_matrix)'''
 
 
-def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
+def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7, st_prop_threshold = 0.15, select_ct_lst=[], select_genes=[]):
     
     score_matrix_path = work_path + 'score_matrix_files/'
     cluster_center_path = work_path + 'cluster_center_files/'
@@ -318,9 +318,9 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
     gene_info_path = work_path+'mu_gene_expression.csv' 
     gene_info = pd.read_csv(gene_info_path, delimiter = ',', header = 0, index_col = 0)
     ct_list = list(gene_info.index)
-    select_ct_lst = ct_list
-    select_genes = list(gene_info.columns)
-    stvae_b40  = ST_Vae1(len(select_genes), len(ct_list), n_layers = 3, n_latent = 128)
+    all_genes = list(gene_info.columns)
+    
+    stvae_b40  = ST_Vae1(len(list(gene_info.columns)), len(list(gene_info.index)), n_layers = 3, n_latent = 128)
     stvae_weights_file = work_path+'model_weight.pkl'
     stvae_b40.load_state_dict(torch.load(stvae_weights_file))
     use_cuda = True
@@ -370,7 +370,13 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
 
     salus_b40 = b40_slide[salus_bar_names]'''
 
-    salus_b40 = filter_low_qual_b40(b40_slide, b40_result, select_ct_lst)
+
+    if len(select_ct_lst) == 0:
+        select_genes = all_genes
+        select_ct_lst = ct_list
+
+    
+    salus_b40 = filter_low_qual_b40(b40_slide, b40_result, select_ct_lst, st_prop_threshold)
 
 
     points = salus_b40.obsm['spatial']
@@ -391,6 +397,8 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
     select_b4 = get_select_b4(b4_coors, region_x_start, region_x_end, region_y_start, region_y_end)
 
     #bar_matrix_idx_dict = {}
+
+    
     if len(set(select_genes)&set(list(b4_adata.var_names)))==0:        
         tmp_lst = []
         for ele in list(b4_adata.var_names):
@@ -399,7 +407,7 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
         b4_adata.var_names = tmp_lst
 
 
-    select_b4_adata = b4_adata[select_b4,select_genes]
+    select_b4_adata = b4_adata[select_b4,all_genes]
     sc.pp.filter_cells(select_b4_adata, min_genes=1)
 
     '''coor = select_b4_adata.obsm['spatial']
@@ -507,7 +515,7 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
 
 
     ct_list = list(gene_info.index)
-    select_genes = list(gene_info.columns)
+    #select_genes = list(gene_info.columns)
     select_gene_index_list = []
     filter_select_genes = []
     for gene in select_genes:
@@ -546,6 +554,11 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7):
     y_split= split_num
     x_delta = int((x_max - x_min)/x_split)
     y_delta = int((y_max - y_min)/y_split)
+
+    select_b4_adata = select_b4_adata[select_b4,select_genes]
+    sc.pp.filter_cells(select_b4_adata, min_genes=1)
+
+    
     X_sparse = select_b4_adata.X.tocsr()
     count = 0
     for x_idx in range(x_split):
