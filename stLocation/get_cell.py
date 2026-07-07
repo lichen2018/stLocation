@@ -93,7 +93,7 @@ def guide(counts, anchor_proportions, anchor_weights, nearest_anchor2anchor, sc_
 
 
 
-def train_model(work_path,start=0, num_epochs = 30000):
+def train_model(work_path,start=0, num_epochs = 30000, select_ct_lst=[], select_genes=[]):
     data_path = work_path+'anchor_files/'
     result_path = work_path+'result/'
 
@@ -104,11 +104,15 @@ def train_model(work_path,start=0, num_epochs = 30000):
     csv_path = work_path+'mu_gene_expression.csv'
     gene_info = pd.read_csv(csv_path, delimiter = ',', header = 0, index_col = 0)
     ct_list = list(gene_info.index)
+    all_genes = list(gene_info.columns)
 
-    select_ct_lst = ct_list
+    if len(select_ct_lst) == 0:
+        select_genes = all_genes
+        select_ct_lst = ct_list
 
 
-    select_genes = list(gene_info.columns)
+
+    #select_genes = list(gene_info.columns)
 
     select_gene_index_list = []
     for gene in select_genes:
@@ -129,8 +133,9 @@ def train_model(work_path,start=0, num_epochs = 30000):
     disper_file = work_path+'disp_gene_expression.csv'
     disper = torch.tensor(pd.read_csv(disper_file, delimiter = ',', header = None).values.astype(np.float32))[0]
     
-    
-    
+    disper = disper[select_gene_index_list]
+    scale_prior = scale_prior[select_gene_index_list]
+    additive_prior = additive_prior[select_gene_index_list]
     
     pyro.clear_param_store()
     # Generate some sample data for demonstration
