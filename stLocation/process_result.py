@@ -77,7 +77,7 @@ def get_output_adata_nearest(nearest_anchor2anchor, a_logits_dis_prop, c_logits_
 
 
 
-def get_adata(work_path, b4_adata_path):
+def get_adata(work_path, b4_adata_path, select_ct_lst=[]):
     data_path = work_path+'anchor_files/'
     result_path = work_path+'result/'
     b4_adata = sc.read_h5ad(b4_adata_path)
@@ -85,7 +85,8 @@ def get_adata(work_path, b4_adata_path):
     gene_info = pd.read_csv(csv_path, delimiter = ',', header = 0, index_col = 0)
     ct_list = list(gene_info.index)
 
-    select_ct_lst = ct_list
+    if len(select_ct_lst) == 0:
+        select_ct_lst = ct_list
 
     threshold = 20
     datafiles = []
@@ -107,7 +108,7 @@ def get_adata(work_path, b4_adata_path):
         filtered_select_bars = np.load(data_path+'filtered_select_bars_'+str(idx)+'.npy')
         a_logits_dis_prop = torch.load(result_path+'a_logits_dis_prop_'+str(idx)+'.pt')
         c_logits_dis_prop = torch.load(result_path+'c_logits_dis_prop_'+str(idx)+'.pt')
-        tmp_adata,assigned_clu_dict, tmp_score_lst = get_output_adata_nearest(nearest_anchor2anchor, a_logits_dis_prop, c_logits_dis_prop, ct_list, b4_adata, filtered_select_bars, threshold, batch_id, 0,0.5)
+        tmp_adata,assigned_clu_dict, tmp_score_lst = get_output_adata_nearest(nearest_anchor2anchor, a_logits_dis_prop, c_logits_dis_prop, select_ct_lst, b4_adata, filtered_select_bars, threshold, batch_id, 0,0.5)
         adata_lst.append(tmp_adata)
         assigned_clu_dict_lst.append(assigned_clu_dict)
         score_lst.append(tmp_score_lst)
