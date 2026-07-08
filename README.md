@@ -57,6 +57,7 @@ generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adat
   b40_adata_path            path to the AnnData object storing spatial RNA data at 10 μm resolution.
   threshold                 threshold for filtering out spots with low scores.
   split_num                 the tissue is split to split_num*split_num regions.
+  st_prop_threshold         proportion threshold for the dominant cell type.
   select_ct_lst             list of selected cell types
   select_genes              list of selected genes
   ```
@@ -84,7 +85,7 @@ generate_cluster_centers(work_path, split_num = 2, max_iter=100)
 
 ### Generate anchors to indicate cellular positions
 ```python
-generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
+generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7, st_prop_threshold = 0.15, select_ct_lst=[], select_genes=[])
 ```
 #### Description
   ```
@@ -96,12 +97,15 @@ generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
   b40_adata_path            path to the AnnData object storing spatial RNA data at 10 μm resolution.
   b4_adata_path             path to the AnnData object storing spatial RNA data at 1 μm resolution.
   split_num                 the tissue is split to split_num*split_num regions.
+  st_prop_threshold         proportion threshold for the dominant cell type.
+  select_ct_lst             list of selected cell types.
+  select_genes              list of selected genes.
   ```
 
 
 ### Train stLocation
 ```python
-train_model(work_path,start=0, num_epochs = 30000)
+train_model(work_path,start=0, num_epochs = 30000, select_ct_lst=[], select_genes=[])
 ```
 #### Description
   ```
@@ -112,12 +116,14 @@ train_model(work_path,start=0, num_epochs = 30000)
   work_path                 path to store intermediate result.
   start                     start index of region to process.  
   num_epochs                number of epochs.
+  select_ct_lst             list of selected cell types.
+  select_genes              list of selected genes.
   ```
 
 
 ### Get result
 ```python
-get_adata(work_path, b4_adata_path)
+get_adata(work_path, b4_adata_path, select_ct_lst=[])
 ```
 #### Description
   ```
@@ -130,8 +136,9 @@ get_adata(work_path, b4_adata_path)
   ```
 #### Return 
   ```
-  adata                     result of stLocation
-  score_lst                 list of score for each cell
+  adata                     result of stLocation.
+  score_lst                 list of score for each cell.
+  select_ct_lst             list of selected cell types.
   ```
 
 
