@@ -245,10 +245,10 @@ def filter_low_qual_b40(b40_slide, b40_result, select_ct_lst, st_prop_threshold)
 def generate_bar_matrix(select_b4_adata, x_min, x_max, y_min, y_max):
     bar_matrix_idx_dict = {}
     tmp_lst = []
-    for ele in list(select_b4_adata.var_names):
+    '''for ele in list(select_b4_adata.var_names):
         res = ele.upper()
         tmp_lst.append(res)
-    select_b4_adata.var_names = tmp_lst
+    select_b4_adata.var_names = tmp_lst'''
 
     coor = select_b4_adata.obsm['spatial']
 
