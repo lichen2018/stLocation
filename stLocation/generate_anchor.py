@@ -555,7 +555,7 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7, st_
     x_delta = int((x_max - x_min)/x_split)
     y_delta = int((y_max - y_min)/y_split)
 
-    select_b4_adata = select_b4_adata[select_b4,select_genes]
+    select_b4_adata = select_b4_adata[:,select_genes]
     sc.pp.filter_cells(select_b4_adata, min_genes=1)
 
     
