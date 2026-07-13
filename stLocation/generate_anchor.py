@@ -206,8 +206,9 @@ def accelerated_filter(region_b4_bars, region_clu_lst, bar_matrix_idx_dict):
     filter_index_lst = []
     
     # 提前计算距离阈值的平方（避免开方运算，加速比较）
-    dist_threshold_sq = 7.5 ** 2  # 56.25
-    
+    #dist_threshold_sq = 7.5 ** 2  # 56.25
+    dist_threshold_sq = 20 ** 2  # 56.25
+
     # 遍历每个b4（仅保留外层循环，内层用向量化替代）
     for b4_idx in range(len(region_b4_bars)):
         # 当前b4的坐标（形状：(2,)）
@@ -490,8 +491,10 @@ def generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7, st_
     anchor_prop_lst, updated_cluster_centers, neighbor_num_lst = get_anchor_prop_lst(updated_cluster_centers, bar_matrix, stvae_b40, select_b4_adata, 100000, 100000)
     neighbor_bars = []
     cluster_neighbor_bars_dict = {}
-    w = 20
-    h = 20
+    #w = 20
+    #h = 20
+    w = 30
+    h = 30
     width = 100000000
     height = 100000000
     for idx in range(len(updated_cluster_centers)):
