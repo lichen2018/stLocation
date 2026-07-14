@@ -142,6 +142,27 @@ get_adata(work_path, b4_adata_path, select_ct_lst=[])
   ```
 
 
+### Extract and visualize inferred cells
+```python
+extract_visualize_result(spatial_data_path, gene_info_path, save_fold, ct_color_dict='')
+```
+#### Description
+  ```
+  Extract and visualize inferred cells.
+  ```
+#### Parameters  
+  ``` 
+  spatial_data_path         path to store intermediate and final result.
+  gene_info_path            path to the gene expression file, which contains the cell type information.
+  save_fold                 filefold to store inferred cells and plotted figure.
+  ct_color_dict             cell type–color mapping dictionary.
+  ```
+#### Return 
+  ```
+  adata                     result of stLocation.
+  ```
+
+
 
 ## Data
 All propcessed data could be downloaded from the shared link: https://drive.google.com/drive/folders/11djR7vxr6Y1VTpz2EVJKH3MvJNGm9VoR?usp=share_link  
@@ -156,6 +177,8 @@ from stLocation.generate_cluster_center import generate_cluster_centers
 from stLocation.generate_anchor import generate_anchor
 from stLocation.get_cell import train_model
 from stLocation.process_result import get_adata
+from stLocation.extract_visualize_result import extract_visualize_result
+
 spatial_data_path = './'
 work_path = spatial_data_path+'690/'
 b4_adata_path = spatial_data_path+'b4_in_tissue.h5ad'
@@ -170,4 +193,8 @@ generate_anchor(work_path, b40_adata_path, b4_adata_path, split_num = 7)
 train_model(work_path)
 # Get output of stLocation
 adata, score_lst = get_adata(work_path, b4_adata_path)
+# Extract and visualize inferred cells
+save_fold = work_path+'result'
+mu_expr_file = work_path+'mu_gene_expression.csv'
+extract_visualize_result(work_path, mu_expr_file, save_fold)
 ```
