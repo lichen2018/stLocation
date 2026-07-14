@@ -179,11 +179,11 @@ from stLocation.get_cell import train_model
 from stLocation.process_result import get_adata
 from stLocation.extract_visualize_result import extract_visualize_result
 
-spatial_data_path = './'
-work_path = spatial_data_path+'690/'
-b4_adata_path = spatial_data_path+'b4_in_tissue.h5ad'
-unsplice_b4_adata_path = spatial_data_path+'unsplice_in_tissue.h5ad'
-b40_adata_path = spatial_data_path+'b40_in_tissue.h5ad'
+
+work_path = './'
+b4_adata_path = work_path+'b4_in_tissue.h5ad'
+unsplice_b4_adata_path = work_path+'unsplice_in_tissue.h5ad'
+b40_adata_path = work_path+'b40_in_tissue.h5ad'
 scores = generate_score_matrix(work_path, b4_adata_path, unsplice_b4_adata_path, b40_adata_path)
 # Get cluster centers of score matrix
 generate_cluster_centers(work_path, split_num = 4, max_iter=80)
